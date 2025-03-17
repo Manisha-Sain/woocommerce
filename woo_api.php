@@ -1,32 +1,74 @@
 <?php
 $store_url = 'https://dev06.purplecommerce.live/woo-02';
 $endpoint = '/wc-auth/v1/authorize';
-$consumer_key = 'ck_7c25e896c1517f60013f3b1720ab0d68ac64b88a'; // Replace with your Consumer Key
-$consumer_secret = 'cs_726322c9b28b4ba9a18dd0320bb934f681375628'; // Replace with your Consumer Secret
+$consumer_key = 'ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'; // Replace with your Consumer Key
+$consumer_secret = 'cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'; // Replace with your Consumer Secret
 
-$app_name = 'PurpleCommerce';
-$scope = 'read_write'; // or 'read', 'write'
-$user_id = 1; // Replace with the actual WordPress user ID
-$return_url = 'https://seventies.purplecommerce.live/IS_api/return_url.php';
-$callback_url = 'https://seventies.purplecommerce.live/IS_api/callback_url.php';
 
-$auth_url = $store_url . $endpoint . '?' . http_build_query([
-    'app_name' => $app_name,
-    'scope' => $scope,
-    'user_id' => $user_id,
-    'return_url' => $return_url,
-    'callback_url' => $callback_url
-]);
+$api_url = 'https://dev06.purplecommerce.live/woo-02/wp-json/wc/v3/customers';
 
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $auth_url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_USERPWD, $consumer_key . ':' . $consumer_secret);
-curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 
-$response = curl_exec($ch);
-curl_close($ch);
+// Prepare the customer data
+$customer_data = array(
+    'email' => 'john.doe@example.com',
+    'first_name' => 'John',
+    'last_name' => 'Doe',
+    'billing' => array(
+        'first_name' => 'John',
+        'last_name' => 'Doe',
+        'address_1' => '123 Main St',
+        'city' => 'Anytown',
+        'state' => 'CA',
+        'postcode' => '90210',
+        'country' => 'US',
+        'email' => 'john.doe@example.com',
+        'phone' => '555-555-5555'
+    ),
+    'shipping' => array(
+        'first_name' => 'John',
+        'last_name' => 'Doe',
+        'address_1' => '123 Main St',
+        'city' => 'Anytown',
+        'state' => 'CA',
+        'postcode' => '90210',
+        'country' => 'US'
+    )
+    );
+echo "i am here"; echo '<pre>'; print_r($customer_data); echo '</pre>';//die;
+// Initialize cURL
+$curl = curl_init();
 
-echo '<pre>';
-print_r(json_decode($response, true));
-echo '</pre>';
+$fields_array = array(
+    CURLOPT_URL => $api_url,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_ENCODING => "",
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 30,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => "POST",
+    CURLOPT_SSL_VERIFYPEER => false,
+    CURLOPT_POSTFIELDS => json_encode($customer_data),
+    CURLOPT_HTTPHEADER => array(
+        "cache-control: no-cache",
+        "content-type: application/json",
+    )
+);
+
+
+
+ curl_setopt_array($curl, $fields_array);
+ $response = curl_exec($curl);
+//echo $response;
+
+// Check for errors
+if (curl_errno($curl)) {
+    echo 'Error:' . curl_error($curl);
+} else {
+    // Decode the response
+    $response_data = json_decode($response, true);
+    print_r($response_data);
+}
+
+// Close cURL
+curl_close($curl);
+?>
