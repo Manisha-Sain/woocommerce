@@ -1,11 +1,11 @@
 <?php
-$store_url = 'https://dev06.purplecommerce.live/woo-02';
+$store_url = 'https://site_url';
 $endpoint = '/wc-auth/v1/authorize';
 $consumer_key = 'ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'; // Replace with your Consumer Key
 $consumer_secret = 'cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'; // Replace with your Consumer Secret
 
 
-$api_url = 'https://dev06.purplecommerce.live/woo-02/wp-json/wc/v3/customers';
+$api_url = 'https://site_url/wp-json/wc/v3/customers';
 
 
 // Prepare the customer data
